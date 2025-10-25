@@ -1,85 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <title>Моє Портфоліо</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
-    
-    <style>
-        /* Тут ми будемо додавати CSS-стилі */
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 0;
-            padding: 0;
-            background-color: #f0f2f5;
-        }
-        .container {
-            width: 90%;
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        h1, h2 {
-            color: #333;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 5px;
-        }
-        table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-}
-th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-}
-th {
-    background-color: #f2f2f2;
-    color: #555;
-}
-    </style>
+  <meta charset="UTF-8">
+  <title>Matrix Chat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
 </head>
-<body>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
 
-    <div class="container">
-        <h1>Моє портфоліо</h1>
-        
-        <p>Вітаю! Це мій перший практичний проєкт в Electron.</p>
-        <h2>Мої навички</h2>
-<ul>
-    <li>HTML5 - Основи</li>
-    <li>CSS - Базові стилі</li>
-    <li>JavaScript - Початківець</li>
-    <li>Electron - Встановлення та запуск</li>
-</ul>
-        <h2>Мої проєкти</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Назва проєкту</th>
-            <th>Технологія</th>
-            <th>Статус</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Перший додаток</td>
-            <td>Electron.js</td>
-            <td>В процесі</td>
-        </tr>
-        <tr>
-            <td>Портфоліо</td>
-            <td>HTML/CSS</td>
-            <td>Готово</td>
-        </tr>
-    </tbody>
-</table>
+<div x-data="chatApp()" class="bg-white p-6 rounded shadow-md w-96">
 
-        </div>
+  <!-- Форма логіну -->
+  <template x-if="!accessToken">
+    <div>
+      <h2 class="text-xl font-bold mb-4">Вхід у систему</h2>
+      <input x-model="username" placeholder="Логін"
+             class="border p-2 w-full mb-2 rounded" />
+      <input x-model="password" type="password" placeholder="Пароль"
+             class="border p-2 w-full mb-2 rounded" />
+      <button @click="login()" class="bg-blue-500 text-white p-2 w-full rounded">Увійти</button>
+      <p x-text="error" class="text-red-500 mt-2"></p>
+    </div>
+  </template>
 
+  <!-- Панель після авторизації -->
+  <template x-if="accessToken">
+    <div class="flex flex-col w-full h-[500px]">
+      <h1 class="text-2xl font-bold mb-4">Ви успішно авторизувались. Панель керування</h1>
+      
+      <!-- User ID -->
+      <div class="mb-4 p-4 bg-gray-200 rounded text-sm break-words">
+        <span class="font-bold">Ваш Matrix ID:</span>
+        <span x-text="userId ? userId : 'Завантаження...'"></span>
+      </div>
+
+      <!-- Резюме -->
+      <div class="mb-4 p-4 bg-gray-100 rounded shadow-sm text-sm">
+        <h2 class="font-bold mb-2">Резюме користувача:</h2>
+        <p><strong>Ім'я:</strong> 34_20</p>
+        <p><strong>Посада:</strong> Розробник</p>
+        <p><strong>Досвід:</strong> Розробка веб-додатків, PWA, AlpineJS, TailwindCSS</p>
+        <p><strong>Мета:</strong> Навчання та вдосконалення навичок програмування</p>
+      </div>
+    </div>
+  </template>
+
+</div>
+
+<script>
+function chatApp() {
+  return {
+    username: '',
+    password: '',
+    userId: '',
+    accessToken: '',
+    error: '',
+    
+    async login() {
+      try {
+        const res = await fetch('https://matrix.org/_matrix/client/r0/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'm.login.password', user: this.username, password: this.password })
+        });
+        const data = await res.json();
+        if(data.access_token) {
+          this.accessToken = data.access_token;
+          this.userId = data.user_id; 
+          this.error = '';
+        } else {
+          this.error = 'Невірний логін або пароль';
+        }
+      } catch(e) {
+        this.error = 'Помилка під час входу';
+        console.error(e);
+      }
+    }
+  }
+}
+</script>
 </body>
 </html>
