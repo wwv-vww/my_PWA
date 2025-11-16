@@ -1,0 +1,20 @@
+<!-- Сайдбар із кімнатами -->
+<template x-if="accessToken">
+  <div class="sidebar">
+    <h2>Chat Rooms</h2>
+    <div class="room-list">
+      <template x-for="room in rooms" :key="room.roomId">
+        <li 
+          @click="switchRoom(room.roomId)" 
+          :class="{ 'active': room.roomId === roomId }" 
+          x-text="room.name || room.roomId"
+        ></li>
+      </template>
+    </div>
+    <div>
+      <input x-model="newRoomName" placeholder="Enter room name" class="sidebar-input">
+      <button @click="createRoom()" class="create-room-btn">Create New Room</button>
+      <p x-show="newRoomId" class="room-id">Room ID: <span x-text="newRoomId"></span></p>
+    </div>
+  </div>
+</template>

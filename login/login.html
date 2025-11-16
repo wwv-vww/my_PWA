@@ -1,0 +1,9 @@
+<template x-if="!accessToken">
+    <div class="login-container">
+        <h2 class="login-title">Matrix Access</h2>
+        <input x-model="username" placeholder="Username (@user:matrix.org)" class="login-input">
+        <input x-model="password" type="password" placeholder="Password" class="login-input">
+        <button @click="login()" class="login-button">Authenticate</button>
+        <p x-text="error" class="login-error"></p>
+    </div>
+</template>

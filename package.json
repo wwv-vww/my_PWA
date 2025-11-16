@@ -2,12 +2,12 @@
   "name": "my-electron-app",
   "version": "1.0.0",
   "description": "My first Electron app",
-  "main": "inedx.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
   "keywords": [],
-  "author": "Your Name",
+  "author": "Vitalii",
   "license": "ISC",
   "devDependencies": {
     "electron": "^31.0.1"
