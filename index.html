@@ -7,8 +7,10 @@
   <script src="https://unpkg.com/alpinejs" defer></script>
   <script src="./login/login.js"></script>
   <script src="./sidebar/sidebar.js"></script>
+  <script src="./chat/chat.js"></script>
   <link rel="stylesheet" href="./sidebar/sidebar.css">
   <link rel="stylesheet" href="./login/login.css">
+  <link rel="stylesheet" href="./chat/chat.css">
   <style>
     body {
       background: #ffffff;
@@ -25,9 +27,12 @@
     <div id="sidebar-container"></div>
 
     <!-- Контейнер для основної області чату -->
-    <div class="chat-area p-4 flex flex-col">
+    <div class="chat-area p-4 flex flex-col w-full">
       <!-- Контейнер для логіну -->
       <div id="login-container"></div>
+      
+      <!-- Контейнер для чату -->
+      <div id="chat-component-container"></div>
     </div>
   </div>
 
@@ -49,6 +54,14 @@
           document.getElementById('sidebar-container').innerHTML = html;
         })
         .catch(error => console.error('Error loading sidebar:', error));
+
+      // Завантаження chat.html
+      fetch('./chat/chat.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('chat-component-container').innerHTML = html;
+        })
+        .catch(error => console.error('Error loading chat:', error));
     });
   </script>
 
@@ -72,6 +85,12 @@
         login,
         createRoom,
         fetchRoomsWithNames,
+        joinRoom,
+        inviteUserToRoom,
+        getRoomName,
+        switchRoom,
+        sendMessage,
+        fetchMessages
       }
     }
   </script>

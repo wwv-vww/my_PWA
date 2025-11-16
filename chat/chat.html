@@ -1,0 +1,47 @@
+<template x-if="accessToken">
+  <div class="chat-interface">
+    <!-- User ID та Room ID -->
+    <div class="chat-header">
+      <div class="user-info">
+        <span class="label">Your Matrix ID:</span>
+        <span x-text="userId ? userId : 'Loading...'"></span>
+      </div>
+      <div class="room-info">
+        <span class="label">Room ID:</span>
+        <span x-text="roomId || 'Not selected'" class="room-id" @click="$clipboard(roomId)"></span>
+        <span class="copy-hint">(Click to copy)</span>
+      </div>
+    </div>
+    
+    <!-- Список повідомлень -->
+    <div class="messages-container">
+      <template x-if="messages.length === 0">
+        <p class="no-messages">No messages yet. Start the conversation!</p>
+      </template>
+      <template x-for="msg in messages" :key="msg.id">
+        <div class="message">
+          <strong x-text="msg.sender === userId ? 'You' : msg.sender.split(':')[0].substring(1) + ':'"></strong>
+          <span x-text="msg.body" class="message-body"></span>
+        </div>
+      </template>
+    </div>
+    
+    <!-- Поле для введення повідомлення -->
+    <div class="message-input-section">
+      <textarea x-model="newMessage" placeholder="Type your message here..." class="message-input"></textarea>
+      <button @click="sendMessage()" class="send-button">Send Message</button>
+    </div>
+    
+    <!-- Запрошення та приєднання -->
+    <div class="room-actions">
+      <div class="invite-section">
+        <input x-model="inviteUser" placeholder="Invite user (e.g., @user:matrix.org)" class="action-input">
+        <button @click="inviteUserToRoom()" class="action-button invite">Invite User</button>
+      </div>
+      <div class="join-section">
+        <input x-model="joinRoomId" placeholder="Room ID to join (e.g., !roomId:matrix.org)" class="action-input">
+        <button @click="joinRoom()" class="action-button join">Join Room</button>
+      </div>
+    </div>
+  </div>
+</template>
