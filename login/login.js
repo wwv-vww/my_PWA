@@ -149,7 +149,6 @@
         $copyMsg.textContent = 'Токен скопійовано в буфер обміну';
         setTimeout(() => $copyMsg.textContent = '', 2000);
       } catch (err) {
-        // Ignore clipboard errors
       }
     });
 

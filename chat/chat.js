@@ -1,4 +1,3 @@
-// chat.js
 window.Chat = (() => {
   const state = {
     accessToken: '',
@@ -10,7 +9,6 @@ window.Chat = (() => {
     isTyping: false
   };
 
-  // Утилиты
   const $ = (id) => document.getElementById(id);
 
   const showError = (message) => {
@@ -44,7 +42,6 @@ window.Chat = (() => {
         roomEl.onclick = async () => {
           try {
             await navigator.clipboard.writeText(state.roomId);
-            // Временная подсветка
             roomEl.style.background = 'rgba(255, 255, 255, 0.4)';
             setTimeout(() => {
               roomEl.style.background = '';
@@ -95,7 +92,6 @@ window.Chat = (() => {
       `;
     }).join('');
 
-    // Автопрокрутка к последнему сообщению
     messagesEl.scrollTop = messagesEl.scrollHeight;
   };
 
@@ -129,7 +125,6 @@ window.Chat = (() => {
     }
   };
 
-  // Основные методы
   const sendMessage = async () => {
     const inputEl = $('chat-input');
     const message = inputEl?.value.trim();
@@ -157,15 +152,13 @@ window.Chat = (() => {
         })
       });
 
-      console.log('Message sent:', result); // Додано для дебагу
+      console.log('Message sent:', result);
 
-      // Очищаем поле ввода
       if (inputEl) {
         inputEl.value = '';
         inputEl.style.height = 'auto';
       }
 
-      // Добавляем сообщение локально и обновляем
       state.messages.push({
         id: result.event_id,
         body: message,
@@ -189,7 +182,7 @@ window.Chat = (() => {
     }
 
     try {
-      console.log('Fetching messages for room:', state.roomId); // Додано для дебагу
+      console.log('Fetching messages for room:', state.roomId);
       
       const query = state.lastSyncToken 
         ? `?since=${encodeURIComponent(state.lastSyncToken)}&timeout=10000`
@@ -228,7 +221,7 @@ window.Chat = (() => {
   };
 
   const switchRoom = (roomId) => {
-    console.log('Chat: Switching to room:', roomId); // Додано для дебагу
+    console.log('Chat: Switching to room:', roomId);
     
     state.roomId = roomId;
     state.messages = [];
@@ -250,19 +243,15 @@ window.Chat = (() => {
     }
   };
 
-  // Публичный API
   return {
     init(host) {
-      // Инициализация состояния
       state.accessToken = window.AppAuth.accessToken || '';
       state.userId = window.AppAuth.userId || '';
       state.roomId = window.AppAuth.currentRoomId || '';
 
-      // Привязка событий
       $('chat-send')?.addEventListener('click', sendMessage);
       $('chat-refresh')?.addEventListener('click', refreshMessages);
 
-      // Отправка по Enter (Ctrl+Enter для новой строки)
       $('chat-input')?.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey) {
           e.preventDefault();
@@ -270,29 +259,24 @@ window.Chat = (() => {
         }
       });
 
-      // Автоматическое изменение высоты textarea
       $('chat-input')?.addEventListener('input', function() {
         this.style.height = 'auto';
         this.style.height = Math.min(this.scrollHeight, 120) + 'px';
       });
 
-      // Рендер начального состояния
       renderUserInfo();
       renderMessages();
 
-      // Автосинхронизация
       if (state.syncTimer) {
         clearInterval(state.syncTimer);
       }
       state.syncTimer = setInterval(fetchMessages, 3000);
 
-      // Обработчики событий
       document.addEventListener('auth:success', (e) => {
         state.accessToken = e.detail.accessToken;
         state.userId = e.detail.userId;
         renderUserInfo();
         
-        // Перевіряємо, чи є вже обрана кімната
         if (window.Sidebar?.getCurrentRoomId) {
           const currentRoomId = window.Sidebar.getCurrentRoomId();
           if (currentRoomId && currentRoomId !== state.roomId) {
@@ -320,14 +304,13 @@ window.Chat = (() => {
 
       document.addEventListener('room:changed', (e) => {
         const roomId = e.detail?.roomId;
-        console.log('Chat: Received room:changed event:', roomId); // Додано для дебагу
+        console.log('Chat: Received room:changed event:', roomId);
         
         if (roomId !== state.roomId) {
           switchRoom(roomId);
         }
       });
 
-      // Загрузка сообщений если комната уже выбрана
       if (state.roomId) {
         fetchMessages();
       }

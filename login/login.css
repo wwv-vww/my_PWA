@@ -53,14 +53,16 @@
   border-radius: 10px;
   outline: none;
   font-size: 14px;
+  color: #000000;
   transition: all 0.2s ease;
   background: #fafafa;
 }
 
 .login__input:focus {
   border-color: #2563eb;
-  background: #000000;
+  background: #ffffff;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  color: #000000;
 }
 
 .login__input::placeholder {

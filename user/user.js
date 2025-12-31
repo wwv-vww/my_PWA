@@ -1,4 +1,3 @@
-// user.js
 (function () {
   const API_BASE = 'https://matrix.org/_matrix/client/r0';
 
@@ -151,7 +150,6 @@
       if (res.ok) {
         showSuccess(`Користувача ${userId} запрошено успішно`);
         document.getElementById('invite-user').value = '';
-        // Обновляем список участников
         await fetchRoomMembers(st);
       } else {
         throw new Error(data.error || `Помилка запрошення: ${res.status}`);
@@ -197,17 +195,14 @@
         showSuccess('Успішно приєднано до кімнати');
         document.getElementById('join-room-id').value = '';
         
-        // Оновлюємо глобальний стан
         if (window.AppAuth) {
           window.AppAuth.currentRoomId = data.room_id || joinRoomId;
         }
         
-        // Відправляємо подію про зміну кімнати
         document.dispatchEvent(new CustomEvent('room:changed', { 
           detail: { roomId: data.room_id || joinRoomId } 
         }));
-        
-        // Обновляем комнаты в сайдбаре
+
         document.dispatchEvent(new CustomEvent('rooms:refresh'));
       } else {
         throw new Error(data.error || `Помилка приєднання: ${res.status}`);
@@ -227,7 +222,6 @@
     const joinInput = host.querySelector('#join-room-id');
     const joinBtn = host.querySelector('#join-btn');
 
-    // Приглашение пользователя
     inviteBtn?.addEventListener('click', () => {
       const userId = inviteInput?.value?.trim();
       inviteUser(st, userId);
@@ -240,7 +234,6 @@
       }
     });
 
-    // Присоединение к комнате
     joinBtn?.addEventListener('click', () => {
       const roomId = joinInput?.value?.trim();
       joinRoom(st, roomId);
@@ -253,10 +246,8 @@
       }
     });
 
-    // Обработчики событий
     document.addEventListener('auth:success', (e) => {
       st.accessToken = e.detail.accessToken;
-      // Оновлюємо roomId з глобального стану
       st.roomId = window.AppAuth?.currentRoomId || '';
       fetchRoomMembers(st);
     });
@@ -269,12 +260,11 @@
     });
 
     document.addEventListener('room:changed', (e) => {
-      console.log('User: Received room:changed event:', e.detail.roomId); // Додано для дебагу
+      console.log('User: Received room:changed event:', e.detail.roomId);
       st.roomId = e.detail.roomId || '';
       fetchRoomMembers(st);
     });
 
-    // Обновление при изменении списка комнат
     document.addEventListener('rooms:refresh', () => {
       fetchRoomMembers(st);
     });
@@ -285,7 +275,6 @@
       const st = state();
       wireEvents(st, host);
       
-      // Инициализация при загрузке
       if (st.accessToken) {
         fetchRoomMembers(st);
       }

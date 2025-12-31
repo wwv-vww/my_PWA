@@ -1,4 +1,3 @@
-// sidebar.js
 (function () {
   const API_BASE = 'https://matrix.org/_matrix/client';
   const VERS = 'r0';
@@ -49,7 +48,6 @@
       </li>
     `).join('');
 
-    // Add event listeners
     list.querySelectorAll('.sidebar-list__item').forEach(item => {
       const roomId = item.dataset.roomId;
       
@@ -95,7 +93,6 @@
       </li>
     `).join('');
 
-    // Add event listeners for kick buttons
     list.querySelectorAll('.sidebar__kick-btn').forEach((btn, index) => {
       btn.addEventListener('click', () => {
         const member = state.members[index];
@@ -137,7 +134,6 @@
 
     state.rooms = rooms;
 
-    // Reset active room if it no longer exists
     if (state.roomId && !rooms.find(r => r.roomId === state.roomId)) {
       state.roomId = '';
       state.members = [];
@@ -178,7 +174,6 @@
         await switchRoom(host, state, data.room_id);
         renderRooms(host, state);
         
-        // Hide room ID after 5 seconds
         setTimeout(() => {
           roomIdDisplay.style.display = 'none';
         }, 5000);
@@ -215,19 +210,17 @@
   async function switchRoom(host, state, roomId) {
     if (!roomId) return;
 
-    console.log('Switching to room:', roomId); // Додано для дебагу
+    console.log('Switching to room:', roomId);
     
     state.roomId = roomId;
     await fetchRoomMembers(state);
     renderRooms(host, state);
     renderMembers(host, state);
     
-    // ВАЖЛИВО: Відправляємо подію з правильним roomId
     document.dispatchEvent(new CustomEvent('room:changed', { 
       detail: { roomId: roomId } 
     }));
     
-    // Оновлюємо глобальний стан
     if (window.AppAuth) {
       window.AppAuth.currentRoomId = roomId;
     }
@@ -279,7 +272,6 @@
   }
 
   function showError(host, message) {
-    // Remove existing errors
     const existingError = host.querySelector('.sidebar__error');
     if (existingError) {
       existingError.remove();
@@ -304,7 +296,6 @@
         members: []
       };
 
-      // Set up event listeners
       const createBtn = host.querySelector('#create-room-btn');
       const roomInput = host.querySelector('#new-room-name');
 
@@ -317,12 +308,10 @@
       });
 
       roomInput.addEventListener('input', () => {
-        // Clear any existing errors when user types
         const error = host.querySelector('.sidebar__error');
         if (error) error.remove();
       });
 
-      // Load rooms if already authenticated
       if (hasAuth()) {
         fetchRoomsWithNames(state).then(() => {
           renderRooms(host, state);
@@ -330,7 +319,6 @@
         });
       }
 
-      // Listen for external room changes
       document.addEventListener('room:force', (e) => {
         const { roomId } = e.detail || {};
         if (roomId) {
@@ -338,7 +326,6 @@
         }
       });
 
-      // Listen for auth success to load rooms
       document.addEventListener('auth:success', () => {
         fetchRoomsWithNames(state).then(() => {
           renderRooms(host, state);
@@ -346,7 +333,6 @@
         });
       });
 
-      // ВАЖЛИВО: Додаємо метод для отримання поточної кімнати
       window.Sidebar.getCurrentRoomId = () => state.roomId;
     },
 
