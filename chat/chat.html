@@ -1,0 +1,50 @@
+<!-- chat.html -->
+<div class="chat">
+  <!-- Статусная строка с информацией о пользователе и комнате -->
+  <div class="chat__status">
+    <div class="chat__user-info">
+      <span class="chat__label">Ваш Matrix ID</span>
+      <span id="chat-user-id" class="chat__value">—</span>
+    </div>
+    <div class="chat__room-info">
+      <span class="chat__label">Поточна кімната</span>
+      <span id="chat-room-id" class="chat__value chat__room-pill" title="Клікніть для копіювання">
+        Не обрано
+      </span>
+    </div>
+  </div>
+
+  <!-- Контейнер сообщений -->
+  <div class="chat__messages-container">
+    <div class="chat__messages-header">
+      <h3 class="chat__messages-title">Повідомлення</h3>
+      <button id="chat-refresh" class="chat__refresh-btn">
+        <span>🔄</span>
+        <span>Оновити</span>
+      </button>
+    </div>
+    
+    <div id="chat-messages" class="chat__messages">
+      <div class="chat__empty">
+        Оберіть кімнату для перегляду повідомлень
+      </div>
+    </div>
+  </div>
+
+  <!-- Панель ввода сообщения -->
+  <div class="chat__composer">
+    <textarea 
+      id="chat-input" 
+      class="chat__input" 
+      placeholder="Напишіть ваше повідомлення..."
+      rows="3"
+    ></textarea>
+    <button id="chat-send" class="chat__send-btn">
+      <span>Надіслати</span>
+      <span>✈</span>
+    </button>
+  </div>
+
+  <!-- Блок ошибок -->
+  <div id="chat-error" class="chat__error" style="display: none;"></div>
+</div>

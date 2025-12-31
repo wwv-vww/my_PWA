@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< Updated upstream
 <html>
 <head>
     <meta charset="UTF-8">
@@ -42,9 +43,28 @@ th {
     color: #555;
 }
     </style>
+=======
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chats by Mamchur</title>
+
+  <link rel="stylesheet" href="./index.css" />
+  <link rel="stylesheet" href="./sidebar/sidebar.css" />
+  <link rel="stylesheet" href="./login/login.css" />
+  <link rel="stylesheet" href="./chat/chat.css" />
+  <link rel="stylesheet" href="./user/user.css" />
+
+  <script src="./sidebar/sidebar.js" defer></script>
+  <script src="./login/login.js" defer></script>
+  <script src="./chat/chat.js" defer></script>
+  <script src="./user/user.js" defer></script>
+>>>>>>> Stashed changes
 </head>
 <body>
 
+<<<<<<< Updated upstream
     <div class="container">
         <h1>Моє портфоліо</h1>
         
@@ -81,5 +101,81 @@ th {
 
         </div>
 
+=======
+<body class="index-container">
+  <div class="page">
+
+    <main class="page__main">
+      <aside id="sidebar-root" class="sidebar-root"></aside>
+
+      <section class="content">
+        <div id="login-root"></div>
+        <div id="chat-container" class="chat-container"></div>
+      </section>
+
+      <aside id="user-root" class="user-root"></aside>
+    </main>
+  </div>
+
+  <script>
+    window.AppAuth = { accessToken: '', userId: '' };
+
+    async function loadFragment(path) {
+      if (window.components?.load) {
+        return await window.components.load(path);
+      }
+      const res = await fetch(path);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.text();
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const loginHost = document.getElementById('login-root');
+      try {
+        loginHost.innerHTML = await loadFragment('./login/login.html');
+        if (window.Login?.init) {
+          window.Login.init(loginHost, {
+            onAuth: ({ accessToken, userId }) => {
+              window.AppAuth.accessToken = accessToken;
+              window.AppAuth.userId = userId;
+              document.dispatchEvent(new CustomEvent('auth:success', { 
+                detail: { accessToken, userId } 
+              }));
+            },
+            onLogout: () => {
+              window.AppAuth.accessToken = '';
+              window.AppAuth.userId = '';
+              document.dispatchEvent(new CustomEvent('auth:logout'));
+            }
+          });
+        }
+      } catch (e) {
+        loginHost.innerHTML = '<div class="error">Помилка завантаження форми авторизації</div>';
+      }
+
+      document.addEventListener('auth:success', async () => {
+        const loadComponent = async (id, path, initFunc) => {
+          const host = document.getElementById(id);
+          try {
+            host.innerHTML = await loadFragment(path);
+            if (initFunc) initFunc(host);
+          } catch (e) {
+            host.innerHTML = `<div class="error">Помилка завантаження ${id}</div>`;
+          }
+        };
+
+        await loadComponent('sidebar-root', './sidebar/sidebar.html', window.Sidebar?.init);
+        await loadComponent('chat-container', './chat/chat.html', window.Chat?.init);
+        await loadComponent('user-root', './user/user.html', window.User?.init);
+      });
+
+      document.addEventListener('auth:logout', () => {
+        document.getElementById('sidebar-root').innerHTML = '';
+        document.getElementById('chat-container').innerHTML = '';
+        document.getElementById('user-root').innerHTML = '';
+      });
+    });
+  </script>
+>>>>>>> Stashed changes
 </body>
 </html>
