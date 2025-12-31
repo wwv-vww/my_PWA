@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chats Vitaliir</title>
+  <title>Chats Vitalii</title>
 
   <link rel="stylesheet" href="./index.css" />
   <link rel="stylesheet" href="./sidebar/sidebar.css" />
@@ -43,6 +43,15 @@
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return await res.text();
     }
+
+    // Запитуємо дозвіл на сповіщення
+    document.addEventListener('DOMContentLoaded', () => {
+      if (Notification.permission === 'default') {
+        Notification.requestPermission().then(permission => {
+          console.log('Notification permission:', permission);
+        });
+      }
+    });
 
     document.addEventListener('DOMContentLoaded', async () => {
       const loginHost = document.getElementById('login-root');
